@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Stephan Meyer | Stephan</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/components/ionicons/css/ionicons.css">
+
+    <script src="https://use.typekit.net/fti0giy.js"></script>
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/static/js/prettify.js"></script>
+    <script src="/static/js/app.js"></script>
+  </head>
+  <body onload="prettyPrint()">
+    
+    <header class="site-header">
+      <div class="wrapper">
+        <a class="site-title" href="/">Stephan Meyer zum Alten Borgloh</a>
+        <nav class="site-nav">
+          <div class="trigger">
+            <a class="page-link1" href="/about/">About</a>
+            <a class="page-link2" href="/posts/">Notes&Posts</a>
+            <a class="page-link3" href="/projects/">Projects</a>
+            <a class="page-link4" href="/work/">Work</a>
+            <a class="page-link5" href="/resume/">Resumé</a>
+          <ul class="social-links">
+            <li><a href="https://github.com/ninehundred1"><i class="icon ion-social-octocat"></i></a></li>
+            <li><a href="https://www.linkedin.com/in/stephan-meyer-zum-alten-borgloh-bb664055"><i class="icon ion-social-linkedin"></i></a></li>
+            <li><a href="mailto:meyernsen@gmail.com"><i class="icon ion-email"></i></a></li>
+             
+
+
+
+        </ul>
+       </div>
+        </nav>
+      </div>
+    </header>
+    
+
+    
+<section class="hero-unit" style="background-image: url(/static/img/posts/1.jpg);">
+  <div class="overlay"></div>
+  <div class="inner">
+    <h1>Matlab ScanImage Navigator Extension</h1>
+    <p class="post-meta">Post date : May 01, 2015</p>
+  </div>
+</section>
+
+
+    <section class="content">
+      <div class="wrapper">
+        
+<div class="post">
+
+  <div class="post-content">
+    <p>When we installed ScanImage to run our Two Photon Microscope it was lacking a way to actually now where you are in space. You can move the stage around and track the x,y,z coordinates, but you were mainly lost in numbers. </p>
+<p>I put together an extension to Scan Image that will query the motors to get the current position, translate that to a coordinate system and display that in a GUI within the exisitng ScanImage software.</p>
+<p><img alt="alt text" src="https://camo.githubusercontent.com/c02462a57abb8bd663936da6279db09f2ddab476/687474703a2f2f692e696d6775722e636f6d2f4552646365374b2e6a7067" title="ScanImageNavigator" /></p>
+<p>The GUI will allow you to record where you are, mark it in the coordinate system, track your movement, click on saves positions to return to them and also annotate. You can also export the map as a vector as well as all the coordinates to use in Matlab.</p>
+<p>See also here for a Labrigger post <a href="http://labrigger.com/blog/2014/05/08/meyernavigator/comment-page-1/">Labrigger post</a>.</p>
+<p>The whole extension is available <a href="https://github.com/ninehundred1/ScanImage_Navigator">at Github</a></p>
+  </div>
+
+</div>
+
+      </div>
+    </section>
+
+    
+    <footer class="site-footer">
+      <div class="wrapper">
+          <p>2015 - Stephan Meyer zum Alten Borgloh</p>
+      </div>
+    </footer>
+    
+
+    
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-41594454-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+    
+  </body>
+</html>
