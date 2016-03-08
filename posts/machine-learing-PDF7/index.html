@@ -79,7 +79,7 @@ So what is needed is to extract each JPG first and convert it to a 2D array, whe
 </code></pre>
 <p>This would work fine for those white empty pages.</p>
 <p>However, a lot of pages in the document that need deletion are not white but contain an artifact from the scan as shown here: </p>
-<p><img alt="EmptyPageLine" src="http://i.imgur.com/R8Oxt3r.png" style="width:800px"/></p>
+<p><img alt="EmptyPageLine" src="http://i.imgur.com/R8Oxt3r.png" /></p>
 <p>Clearly visible is a dark line on the right edge of the scan. Using Approach A, we would not delete these pages, as the histgram of those pages falls below the cutoff we set above.</p>
 <p><img alt="EmptyPageLineHist" src="http://i.imgur.com/DMPnZOt.png" /></p>
 <p>We could lower the cutoffs to something like this to also delete the ones with the border:</p>
@@ -87,7 +87,7 @@ So what is needed is to extract each JPG first and convert it to a 2D array, whe
     delete page
 </code></pre>
 <p>However, there are pages with only a few words, such as these:</p>
-<p><img alt="SparsePage" src="http://i.imgur.com/GSrs6r9.png" style="width:800px"/></p>
+<p><img alt="SparsePage" src="http://i.imgur.com/GSrs6r9.png" /></p>
 <p>The histogram of these pages show more white pixels than the scan line artifacts:</p>
 <p><img alt="SparsePageHist" src="http://i.imgur.com/tSsRK94.png" /></p>
 <p>so those these pages would also be deleted, if we use the adapted thresholds above.</p>
@@ -129,9 +129,9 @@ But here, on some pages there are figures extending to the right side (would get
 <p>The GUI interface as of now looks like this:</p>
 <p><img alt="CurrentGUI" src="http://i.imgur.com/cm8TtKn.png" /></p>
 <p>Now we can extract the feature vector of this <strong>Full page</strong>:</p>
-<p><img alt="FullPage" src="http://i.imgur.com/K8gpLps.png" style="width:800px"/></p>
+<p><img alt="FullPage" src="http://i.imgur.com/K8gpLps.png" /></p>
 <p>And compare it to this <strong>empty page with artifact</strong>:</p>
-<p><img alt="FullPage" src="http://i.imgur.com/R8Oxt3r.png" style="width:800px"/></p>
+<p><img alt="FullPage" src="http://i.imgur.com/R8Oxt3r.png" /></p>
 <p>Here the 5000 point vector of the <strong>Full page</strong>:</p>
 <p>[254 254 254 254 254 254 254 254 254 254 254 254 254 254 254 254 254 254
  254 254 254 254 254 254 254 254 254 254 254 254 254 254 254 254 254 254

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Stephan Meyer | Stephan</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/components/ionicons/css/ionicons.css">
+
+    <script src="https://use.typekit.net/fti0giy.js"></script>
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/static/js/prettify.js"></script>
+    <script src="/static/js/app.js"></script>
+  </head>
+  <body onload="prettyPrint()">
+    
+    <header class="site-header">
+      <div class="wrapper">
+        <a class="site-title" href="/">Stephan Meyer zum Alten Borgloh</a>
+        <nav class="site-nav">
+          <div class="trigger">
+            <a class="page-link1" href="/about/">About</a>
+            <a class="page-link2" href="/posts/">Notes&Posts</a>
+            <a class="page-link3" href="/projects/">Projects</a>
+            <a class="page-link4" href="/work/">Work</a>
+            <a class="page-link5" href="/resume/">Resumé</a>
+          <ul class="social-links">
+            <li><a href="https://github.com/ninehundred1"><i class="icon ion-social-octocat"></i></a></li>
+            <li><a href="https://www.linkedin.com/in/stephan-meyer-zum-alten-borgloh-bb664055"><i class="icon ion-social-linkedin"></i></a></li>
+            <li><a href="mailto:meyernsen@gmail.com"><i class="icon ion-email"></i></a></li>
+             
+
+
+
+        </ul>
+       </div>
+        </nav>
+      </div>
+    </header>
+    
+
+    
+<section class="hero-unit" style="background-image: url(/static/img/posts/9.jpg);">
+  <div class="overlay"></div>
+  <div class="inner">
+    <h1>Quantify differences in the innervation of neuronal processes.</h1>
+    <p class="post-meta">Post date : January 10, 2016</p>
+  </div>
+</section>
+
+
+    <section class="content">
+      <div class="wrapper">
+        
+<div class="post">
+
+  <div class="post-content">
+    <h1>Quantify differences in the innervation of neuronal processes.</h1>
+<p>Simple ImageJ macro that lets you threshold an anatomy image to extract labeled structures. You can then divide the structures in two groups and quantify the differences in total labeling between those two groups.</p>
+<p>If you believe there is a bias to one side in terms of labeling strength, this would allow you to quantify that by counting all labeled pixels without the backround and plotting a labeling profile.</p>
+<h2>1. Data Input</h2>
+<p><img alt="Fig1" src="http://i.imgur.com/40lz9CA.jpg" /></p>
+<p>Here an example of GFP labeled neurons to run the script on.</p>
+<h2>2. Script Output</h2>
+<h5>A. Areas differences</h5>
+<p>In the first step of the script the user can define two areas to compare. The labeling site was chosen to be compared by dividing it into left and right (see region 1 and 2). The calculated pixel count and ratio is written in the top left corner of the image.
+<img alt="Fig1" src="http://i.imgur.com/IfNszva.jpg" /></p>
+<h5>B. Binned distribution across labeling</h5>
+<p>In the second step the user can define areas across the site to bin and compare a bias in lateral innervation density. These are two user defined areas to be binned.</p>
+<p><img alt="Fig2" src="http://i.imgur.com/YdiItrc.jpg" /></p>
+<h5>C. Binned distribution across labeling - OUTPUT</h5>
+<p>This is the pixel distribution across both of above defined bin areas.</p>
+<p><img alt="Fig2" src="http://i.imgur.com/I0Yjsqs.jpg" /></p>
+<h5>D. Binned density map</h5>
+<p>Next a binned innervation map is calculated allowing to visualize any bias in innervation.</p>
+<p><img alt="Fig2" src="http://i.imgur.com/dGpXwdK.jpg" /></p>
+<h5>E. Summary image</h5>
+<p>This image serves as a summary of all steps taken above.</p>
+<p><img alt="Fig2" src="http://i.imgur.com/mkqdZKM.jpg" /></p>
+  </div>
+
+</div>
+
+      </div>
+    </section>
+
+    
+    <footer class="site-footer">
+      <div class="wrapper">
+          <p>2015 - Stephan Meyer zum Alten Borgloh</p>
+      </div>
+    </footer>
+    
+
+    
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-41594454-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+    
+  </body>
+</html>
