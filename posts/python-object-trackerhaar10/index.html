@@ -46,10 +46,10 @@
     
 
     
-<section class="hero-unit" style="background-image: url(/static/img/posts/2.jpg);">
+<section class="hero-unit" style="background-image: url(/static/img/posts/10.jpg);">
   <div class="overlay"></div>
   <div class="inner">
-    <h1>Python ObjectTracker</h1>
+    <h1>Python ObjectTrackerHaar</h1>
     <p class="post-meta">Post date : March 18, 2016</p>
   </div>
 </section>
@@ -61,27 +61,36 @@
 <div class="post">
 
   <div class="post-content">
-    <p>ObjectTracker - CAMshift</p>
-<p>Track multiple (10s - 100s) of objects in a video or a camera stream and define areas where entry of an object is to be monitored.</p>
-<p>THIS USES THE LESS ACCURATE CAMshift ALGORITHM, COMPARE WITH ObjectTracker_Haar_Classifier FOR EXPLANATIONS</p>
+    <p>ObjectTracker - Haar-like classifier</p>
+<p>Track mouse in open environment with good accuracy</p>
 <h1></h1>
-<p>This enables the tracking of a mouse in an open field situation. The steps as also explained 
- <a href="http://www.swarthmore.edu/NatSci/mzucker1/opencv-2.4.10-docs/doc/tutorials/imgproc/histograms/back_projection/back_projection.html" title="CV2"> here on the CV2 site:</a></p>
-<p><strong>Once initially (see A.):</strong>
-1. Take ROI Image 1
-2. Calculate HS histogram for ROI</p>
-<p><strong>For each other image (see B.):</strong></p>
-<ol>
-<li>Get histogram for each pixel image n</li>
-<li>Reference magnitude in Histogram 1</li>
-<li>Replace pixel with magnitude to from Backprojected Histogram (see C.)</li>
-</ol>
-<p><img alt="OBJECTTRACKER_allobjects" src="http://i.imgur.com/pTNkVfi.jpg" /></p>
-<p>Then the Meanshift part of the algorithm will try to find the area with the highest density in pixels in the Backprojected Histogram, which, as these pixels indicate a match between Image1 and Image2, should be the most likely new position of our image.</p>
-<p><img alt="OBJECTTRACKER_allobjects" src="http://i.imgur.com/ESgW9zs.jpg" /></p>
-<p>If you run this file, for some example movie you will then end up with this rather shaky tracking (for explanations of the track and improvements, go look at file ObjectTrack_Haar_classifier)</p>
-<p><img alt="Link here" src="http://i.imgur.com/F3T5GKu.gif" /></p>
-<h2>What it does:</h2>
+<p>THIS USES THE MORE ACCURATE BUT OBJECT-SPECIFIC Haar-like feature ALGORITHM, COMPARE WITH ObjectTracker_CAMshift FOR COMPARISON</p>
+<h1></h1>
+<p>If you look at the other repository
+<a href="https://github.com/ninehundred1/Object_Track_CAMShift" title="CAMshift"> ObjectTracker_CAMshift</a> you can see the limitation of accurate tracking and a shaky track. One reason being that the background is not uniformly illuminated and a threshold not being restricted to only the mouse. </p>
+<p>Below are examples of a backprojected Histogram for a few frames of the movie. You can see that there are large regions that also share the same pixel values as our mouse, therefore when the meanshift algorithm tries to find the area with maximal pixel density will move around any of those white regions. </p>
+<p>It might even be locked in in the bottom right corner, as the density of the background is high (white), but there is an area of low (black) around it, so it will not exit the bottom corner, even though the mouse moved away. </p>
+<p><img alt="OBJECTTRACKER_allobjects" src="http://i.imgur.com/VgZKFd6.jpg" /></p>
+<p>You can also see that finding the center of the mouse is impossible, as there is so much noise not limited to the actual shape of the mouse sourounding the mouse.</p>
+<h5>Improvement of tracking by training classifiers</h5>
+<h1></h1>
+<p>To enable more smooth and accurate tracking, the use of a trained classifier set might lead to a better performance. 
+In this case this can be done with <strong>CV2s Haar-like classifiers</strong></p>
+<p>The steps as also explained 
+ <a href="http://docs.opencv.org/3.1.0/d7/d8b/tutorial_py_face_detection.html#gsc.tab=0" title="CV2"> here on the CV2 site:</a></p>
+<p><img alt="OBJECTTRACKER_allobjects" src="http://i.imgur.com/pK1lJ82.jpg" /></p>
+<p>In short:</p>
+<p>During training classifiers are generated that match any of the 5 shapes/contours on the left. In the example of the face, you can stretch those boxes to form a good representation of the eyes in the face (in the center image of the face you can see the dark link are the eyes, the white line below is below the eyes, in the right face you can see the dark two sides are the eyes, the white central bar the space between the eyes).</p>
+<p>What the training algorithm does is go through 1000s of images and extract those features specific to your input (in our case a black mouse) and then looks for consistency. Once enough are found, those can be used for any other image in a certain range to extract those features.</p>
+<p>First we need to make a training set consisting of many mice on top of random backgrounds.</p>
+<p><em>This can be automated like this sequence for 1000s of frames from the movie and 1000s of random photos:</em></p>
+<p><img alt="OBJECTTRACKER_allobjects" src="http://i.imgur.com/gQkVFJA.jpg" /></p>
+<p>Below are 9 images from the training set (total of 2000 images)</p>
+<p><img alt="OBJECTTRACKER_allobjects" src="http://i.imgur.com/xb9maPa.jpg" /></p>
+<p>The second set needed for training is just random images of the same size without a mouse.</p>
+<p>Below is the comparison of the tracking using the trained classifier (left) with the unspecific CAMshift tracking (right). Note the much smoother track and the truthful representation of the center point of the mouse.</p>
+<p><img alt="Link here" src="http://i.imgur.com/nhJyIcJ.gif" /></p>
+<h4>What this file does (same as Object_track_CAMshift):</h4>
 <p>Creates data output in the form of images and also saves the raw data in .txt files.</p>
 <p>Below is an example of the output of two tracked objects. The upper left image shows the speed of the objects, blue like colors depict
 a slow speed, brighter colors a faster speed. At the top right the track of two objects (yellow and blue) is shown and three 
