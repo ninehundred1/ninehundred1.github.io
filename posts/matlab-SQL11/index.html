@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Stephan Meyer | Stephan</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/components/ionicons/css/ionicons.css">
+
+    <script src="https://use.typekit.net/fti0giy.js"></script>
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/static/js/prettify.js"></script>
+    <script src="/static/js/app.js"></script>
+  </head>
+  <body onload="prettyPrint()">
+    
+    <header class="site-header">
+      <div class="wrapper">
+        <a class="site-title" href="/">Stephan Meyer zum Alten Borgloh</a>
+        <nav class="site-nav">
+          <div class="trigger">
+            <a class="page-link1" href="/about/">About</a>
+            <a class="page-link2" href="/posts/">Notes&Posts</a>
+            <a class="page-link3" href="/projects/">Projects</a>
+            <a class="page-link4" href="/work/">Work</a>
+            <a class="page-link5" href="/resume/">Resumé</a>
+          <ul class="social-links">
+            <li><a href="https://github.com/ninehundred1"><i class="icon ion-social-octocat"></i></a></li>
+            <li><a href="https://www.linkedin.com/in/stephan-meyer-zum-alten-borgloh-bb664055"><i class="icon ion-social-linkedin"></i></a></li>
+            <li><a href="mailto:meyernsen@gmail.com"><i class="icon ion-email"></i></a></li>
+             
+
+
+
+        </ul>
+       </div>
+        </nav>
+      </div>
+    </header>
+    
+
+    
+<section class="hero-unit" style="background-image: url(/static/img/posts/11.jpg);">
+  <div class="overlay"></div>
+  <div class="inner">
+    <h1>Matlab SQLite Handler</h1>
+    <p class="post-meta">Post date : April 22, 2016</p>
+  </div>
+</section>
+
+
+    <section class="content">
+      <div class="wrapper">
+        
+<div class="post">
+
+  <div class="post-content">
+    <p>Matlab Handle Class to connect to an SQLite database for storing images in tree structure with metadata attached to each image. </p>
+<p>The images are copied into a separate folder and only the paths are stored in the database together with the metadata.
+The database can be queried for metadata parameter ranges and the image paths get returned.</p>
+<p>This current version deals with the storage and organization of differently cropped images which are stored in a tree. A region of a main image (top level of tree) gets cropped to be the second level of the tree. That level gets further croped to form the next level and so on.</p>
+<p><strong>Tree layout (image from Weizman link below):</strong></p>
+<p><img alt="TREE" src="http://i.imgur.com/4FezCGI.jpg" /></p>
+<p>The images are used for behavioral studies where the subject has to decide if a subimage is part of a main image (the smaller the subimage, the more difficult it becomes) and the image is analysed for features necessary to identify as belonging to a particular main image. </p>
+<p>Check here for details:
+<a href="http://www.wisdom.weizmann.ac.il/~dannyh/Mircs/mircs.html" title="CAMshift"> Atoms of recognition in human and computer vision (Weizmann)</a> </p>
+<p><strong>See the bottom of this file for setup (you need to download a few things and move them to the right folder, or modify the paths in the matlab file to match where you store the files).</strong></p>
+<h5>A. Define the image metadata</h5>
+<p>Each image is shown and attached to it is meta data about how often it was shown, how often correctly identified as being part of the main image, and some basic statistics about how often it should be shown to match the experimental setup. Specific images can be retrieved from the database based on thresholds selected by the user of the class (eg, show images that were correctly identified less than 70%, show images not shown this week, show images only of class <em>'bicycles'</em>, etc).</p>
+<p>The metatags are defined in the class code and can be changed to fit other needs by changing this line in the <strong>addNewTable()</strong> function as well as the variable <strong>dbcolnames</strong> in the constructor. The current version is:</p>
+<pre><code>createTable = ['CREATE TABLE ',this.dbTableName,'(Class varchar, '...
+             'SubClass NUMERIC, Hum_C_Score NUMERIC, Size NUMERIC, Subset NUMERIC, '...
+           'Is_MIRC NUMERIC, Monkey_C_Score NUMERIC, Times_shown NUMERIC, Times_correct NUMERIC, '...
+           'Times_wrong NUMERIC, Date_last_shown NUMERIC, Date_added NUMERIC, '...
+        'Path VARCHAR)'];
+</code></pre>
+<p>In this case <strong>Class</strong> defines the highest order branch of the tree. It can be eg <em>'Bike'</em> to include images of many different bikes, where another <strong>Class</strong> is <em>'Ships'</em>, etc.</p>
+<p><strong>Subclass</strong> defines the different <em>bikes</em> (eg 1 for a blue bike, 2 for a racing bike, etc) and is one branch of the node <strong>Class</strong> (each image with the same <strong>Subclass</strong> ID should be derived from the same original image).</p>
+<p><strong>Subset</strong> is used to add a tag to each image so you can different sub sets. <em>BikeBlue</em> and <em>BikeBrown</em> might be assigned <strong>Subset</strong> 1, <em>BikeRed</em> and <em>BikeBlack</em> might be assigned <strong>Subset</strong> 2, so you can then query for only a portion of the whole data for one week (using <strong>Subset</strong> 1), then have completely different images the next week (using <strong>Subset</strong> 2).</p>
+<p><strong>Hum_C_Score, Monkey_C_Score, Is_MIRC</strong> are all extra Tags that are used to keep statistics of the image properties during the experiment.</p>
+<p><em>Example Matlab command for db initialization:</em></p>
+<pre><code>%Initialize Database and Table
+db = SQLiteImageDataBase('koff', 'Experiment_1');
+</code></pre>
+<h5>B. Define the folder structure of source Images and Metadata CSV file and add data</h5>
+<p>Images are added to the database by the <strong>InsertIntoTable(Class_in, SubClass_in, Subset_in)</strong> function, which will ask to select a folder (<em>ChosenFolder</em>). The Folder will have one original image and several subfolders (eg <em>images_id2/</em>), each subfolder being on tree branch with the images (<em>.png</em>) and also a CSV file (<em>hier_tree_info.csv</em>) with some of the metadata that will be added to each entry. </p>
+<p>The hierachy is currently set as this:</p>
+<ul>
+<li>ChosenFolder/</li>
+<li><strong>original.png</strong></li>
+<li>stimuli/<ul>
+<li>images_id2/</li>
+<li><em>hier_tree_info.csv</em></li>
+<li><strong>patch_id2.png</strong></li>
+<li><strong>patch_id3.png</strong></li>
+<li>...</li>
+<li>images_id4/</li>
+<li>...</li>
+</ul>
+</li>
+</ul>
+<p>As parameters of the <strong>InsertIntoTable(Class_in, SubClass_in, Subset_in)</strong>  function you need to specify where you want the images to be added to (which <em>Class</em>, <em>SubClass</em> and <em>Subset</em>), as there should be the option to extend all those branches later on.</p>
+<p>After a folder is selected, the file named <strong>original.png</strong> is copied with a unique ID into the database and added with the <em>tag Is_Original</em> set to <em>True</em>.
+Then the subfolder <em>/stimuli</em> is chosen and images are read from all folders within the <em>/stimul</em>i folder (<em>images_id2, image_id4</em>, etc).</p>
+<p>Each of those folders contains a CSV file with extra info (size of image, C_score, etc) which is processed together with its corresponding image in the private <strong>InsertFolder()</strong> function.</p>
+<p><em>Example of CSV format:</em></p>
+<p>| patch_filename  |  score |  size    |  father_id |  mirc_fl |
+|-----------------|--------|----------|------------|----------|
+| patch_id717.png | 2      | 18       | -1         | 0        |
+| patch_id2.png   | 0.58   | 14       | -1         | 1        |
+| patch_id12.png  | 0.3    | 11.66667 | 2          | 0        |
+| patch_id8.png   | 0.39   | 12       | 2          | 0        |
+| patch_id9.png   | 0.15   | 12       | 2          | 0        |</p>
+<h4></h4>
+<p><em>Matlab command for image insertion:</em></p>
+<pre><code>%Add images and Metadata to Table
+db.InsertIntoTable('Bike_blue', 1, 2);
+</code></pre>
+<p><strong>Here an example of the data within the database (using SQL browser)</strong>
+<img alt="sql" src="http://i.imgur.com/HEgIQfm.jpg" /></p>
+<h5>C. Query the db table for different range of parameters</h5>
+<p>Use the <strong>RetrieveEntriesFromTable()</strong> function to retrieve db entries within a defined range across defined columns.</p>
+<p>In the current version the db columns used are 
+<em> <strong>Class</strong> (</em>specify what class it belongs to, eg 'Bike'<em>), 
+</em> range of <strong>Subclass</strong> (between eg 1 and 4), 
+<em> range of <strong>C_scores</strong> (between eg 0.5 and 0.7) and 
+</em> range of <strong>times_shown</strong> (between eg 100 and 200).</p>
+<p>As there might be many entries you can limit the number of entries returned (<strong>max_entries</strong>) and what column to use for that limit (eg show only the top 100 <strong>times_shown</strong>).</p>
+<p><strong>All parameters need to be strings, and the cursor object gets returned, which can be extended by using .data.</strong></p>
+<p><em>Matlab command for db query:</em></p>
+<pre><code>%Query table for parameter ranges
+db.RetrieveEntriesFromTable('Bike_blue', '0','1', '0.5','0.7' , '0', '2', '0', '-1', '0', '-1','0', 'Hum_C_Score', '50','0'  )
+%expand the cursor to get data
+the_data = ans.data
+</code></pre>
+<p><strong>Here the returned data from above query</strong>
+<img alt="TREE" src="http://i.imgur.com/omc37rg.jpg" /></p>
+<p>The image can then be loaded using:</p>
+<pre><code>%get path entry for first image from query
+imagePath = the_data(1,14);
+%convert cell to string
+imagePath_string = sprintf('%s\n',the_data{:})
+%load image into Matlab
+imread(imagePath_string)
+</code></pre>
+<p>##### FOLLOW BELOW AS SETUP</p>
+<ol>
+<li>
+<p>download SQLite3 (I used Sqlite 3.11)
+    https://www.sqlite.org/download.html</p>
+</li>
+<li>
+<p>download driver sqlite-jdbc-3.8.11.2.jar from</p>
+<p>https://bitbucket.org/xerial/sqlite-jdbc/downloads</p>
+<p>and change the path below at varible YOUR_COMPUTER_JAR_FILE to match
+the location where you saved it
+eg 'C:\Users\Meyer\AppData\Roaming\MathWorks\MATLAB\R2012a\sqlite-jdbc-3.8.11.2.jar'</p>
+</li>
+<li>
+<p>make a folder in 'C:' called 'sqlite_dbs' where your databases are
+    stored
+    ('eg C:\sqlite_dbs\')</p>
+</li>
+<li>
+<p>to view the data outside of Matlab, download SQLite browser from
+    http://sqlitebrowser.org/</p>
+</li>
+</ol>
+<p>for more help:</p>
+<p>http://www.mathworks.com/help/database/ug/sqlite-jdbc-windows.html</p>
+<pre><code>EXAMPLE USE:
+%Initialize Database and Table
+db = SQLiteImageDataBase('koff', 'Experiment_1');
+
+%Add images and Metadata to Table
+db.InsertIntoTable('Bike_blue', 1, 2);
+
+%Query table for parameter ranges
+db.RetrieveEntriesFromTable('Bike_blue', '0','1', '0.5','0.7' , '0', '2', '0', '-1', '0', '-1','0', 'Hum_C_Score', '50','0'  )
+
+%expand the cursor to get data into the Matlab workspace as cell matrix
+the_data = ans.data
+</code></pre>
+<p>emails to:
+ <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#102;&#117;&#115;&#99;&#104;&#114;&#111;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#102;&#117;&#115;&#99;&#104;&#114;&#111;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></p>
+  </div>
+
+</div>
+
+      </div>
+    </section>
+
+    
+    <footer class="site-footer">
+      <div class="wrapper">
+          <p>2015 - Stephan Meyer zum Alten Borgloh</p>
+      </div>
+    </footer>
+    
+
+    
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-41594454-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+    
+  </body>
+</html>
